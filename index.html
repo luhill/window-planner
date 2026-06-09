@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window Treatment Planner & BOM Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="bg-gray-50 font-sans min-h-screen text-gray-800">
+
+    <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="mb-8 border-b border-gray-200 pb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Window Treatment Planner</h1>
+                <p class="text-sm text-gray-500 mt-1">Manage multiple windows, specifications, and export a clean Bill of Materials.</p>
+            </div>
+            <button onclick="generatePDF()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Export PDF Report
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1 bg-white p-4 rounded-xl shadow-xs border border-gray-200 h-fit">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-gray-700">Windows List</h2>
+                    <button onclick="addNewWindow()" class="text-sm bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded-md transition-colors">
+                        + Add
+                    </button>
+                </div>
+                <div id="windowList" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
+                    </div>
+            </aside>
+
+            <main class="lg:col-span-3 bg-white p-6 rounded-xl shadow-xs border border-gray-200">
+                <div id="noWindowMessage" class="hidden text-center py-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    <p class="text-gray-500 font-medium">No windows created yet.</p>
+                    <button onclick="addNewWindow()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md inline-block text-sm font-medium hover:bg-blue-700">Create Your First Window</button>
+                </div>
+
+                <div id="editorPanel">
+                    <div class="flex justify-between items-center mb-6">
+                        <input type="text" id="winName" oninput="updateCurrentWindowField('name', this.value)" class="text-2xl font-bold text-gray-900 border-b border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none pb-1 w-2/3" placeholder="Window Name (e.g., Master Bedroom)">
+                        <button onclick="deleteCurrentWindow()" class="text-sm text-red-600 hover:text-red-800 font-medium flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            Delete Window
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <label class="block text-sm font-medium text-gray-700">Window Reference Photo</label>
+                            <div class="flex items-center justify-center w-full">
+                                <label class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative group">
+                                    <div id="uploadPrompt" class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+                                        <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2l2 2"/></svg>
+                                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span></p>
+                                        <p class="text-xs text-gray-400">PNG, JPG or JPEG</p>
+                                    </div>
+                                    <img id="imagePreview" class="hidden w-full h-full object-cover absolute inset-0" alt="Window Preview">
+                                    <div id="changeOverlay" class="hidden absolute inset-0 bg-black/40 group-hover:flex items-center justify-center text-white text-sm font-medium transition-opacity">Change Image</div>
+                                    <input type="file" id="winImage" accept="image/*" class="hidden" onchange="handleImageUpload(event)" />
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label for="winTreatment" class="block text-sm font-medium text-gray-700 mb-1">Dressing Type</label>
+                                <select id="winTreatment" onchange="updateCurrentWindowField('treatment', this.value)" class="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white shadow-xs focus:border-blue-500 focus:outline-none">
+                                    <option value="Curtains">Curtains</option>
+                                    <option value="Roller Blinds">Roller Blinds</option>
+                                    <option value="Roman Blinds">Roman Blinds</option>
+                                    <option value="Venetian Blinds">Venetian Blinds</option>
+                                    <option value="Plantation Shutters">Plantation Shutters</option>
+                                    <option value="Other">Other (Specify in Notes)</option>
+                                </select>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="winWidth" class="block text-sm font-medium text-gray-700 mb-1">Width (mm)</label>
+                                    <input type="number" id="winWidth" oninput="updateCurrentWindowField('width', this.value)" class="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-xs focus:border-blue-500 focus:outline-none" placeholder="Width">
+                                </div>
+                                <div>
+                                    <label for="winHeight" class="block text-sm font-medium text-gray-700 mb
