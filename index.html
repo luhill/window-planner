@@ -21,6 +21,14 @@
             </button>
         </header>
 
+        <div id="securityWarning" class="hidden mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <div>
+                <strong class="font-semibold block mb-0.5">Running locally from file path</strong>
+                PDF exports containing uploaded images will be blocked by your browser's local security rules (CORS). Upload this file to GitHub Pages or run a local server to unlock full PDF printing functionality.
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <aside class="lg:col-span-1 bg-white p-4 rounded-xl shadow-xs border border-gray-200 h-fit">
                 <div class="flex justify-between items-center mb-4">
@@ -29,8 +37,7 @@
                         + Add
                     </button>
                 </div>
-                <div id="windowList" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
-                    </div>
+                <div id="windowList" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1"></div>
             </aside>
 
             <main class="lg:col-span-3 bg-white p-6 rounded-xl shadow-xs border border-gray-200">
@@ -42,7 +49,7 @@
 
                 <div id="editorPanel">
                     <div class="flex justify-between items-center mb-6">
-                        <input type="text" id="winName" class="text-2xl font-bold text-gray-900 border-b border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none pb-1 w-2/3" placeholder="Window Name (e.g., Master Bedroom)">
+                        <input type="text" id="winName" class="text-2xl font-bold text-gray-900 border-b border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none pb-1 w-2/3" placeholder="Window Name">
                         <button id="btnDeleteWindow" class="text-sm text-red-600 hover:text-red-800 font-medium flex items-center gap-1 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             Delete Window
@@ -53,278 +60,4 @@
                         <div class="space-y-4">
                             <label class="block text-sm font-medium text-gray-700">Window Reference Photo</label>
                             <div class="flex items-center justify-center w-full">
-                                <label class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative group">
-                                    <div id="uploadPrompt" class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
-                                        <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2l2 2"/></svg>
-                                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span></p>
-                                        <p class="text-xs text-gray-400">PNG, JPG or JPEG</p>
-                                    </div>
-                                    <img id="imagePreview" class="hidden w-full h-full object-cover absolute inset-0" alt="Window Preview">
-                                    <div id="changeOverlay" class="hidden absolute inset-0 bg-black/40 group-hover:flex items-center justify-center text-white text-sm font-medium transition-opacity">Change Image</div>
-                                    <input type="file" id="winImage" accept="image/*" class="hidden" />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div>
-                                <label for="winTreatment" class="block text-sm font-medium text-gray-700 mb-1">Dressing Type</label>
-                                <select id="winTreatment" class="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white shadow-xs focus:border-blue-500 focus:outline-none">
-                                    <option value="Curtains">Curtains</option>
-                                    <option value="Roller Blinds">Roller Blinds</option>
-                                    <option value="Roman Blinds">Roman Blinds</option>
-                                    <option value="Venetian Blinds">Venetian Blinds</option>
-                                    <option value="Plantation Shutters">Plantation Shutters</option>
-                                    <option value="Other">Other (Specify in Notes)</option>
-                                </select>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label for="winWidth" class="block text-sm font-medium text-gray-700 mb-1">Width (mm)</label>
-                                    <input type="number" id="winWidth" class="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-xs focus:border-blue-500 focus:outline-none" placeholder="Width">
-                                </div>
-                                <div>
-                                    <label for="winHeight" class="block text-sm font-medium text-gray-700 mb-1">Height (mm)</label>
-                                    <input type="number" id="winHeight" class="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-xs focus:border-blue-500 focus:outline-none" placeholder="Height">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="winNotes" class="block text-sm font-medium text-gray-700 mb-1">Notes / Fabric / Mounting</label>
-                                <textarea id="winNotes" rows="4" class="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-xs focus:border-blue-500 focus:outline-none placeholder-gray-400 text-sm" placeholder="e.g., Face fit, blockout fabric, left-hand chain pull..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <div style="display: none;">
-        <div id="pdfReportContent" style="padding: 30px; background: white; color: black; font-family: sans-serif; width: 790px;">
-            <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 5px; color: #111827; border-b: 2px solid #111827; padding-bottom: 10px;">Window Treatment Schedule & BOM Report</h1>
-            <p style="font-size: 12px; color: #4b5563; margin-bottom: 25px;">Generated on: <span id="reportDate"></span></p>
-            <div id="pdfWindowsContainer"></div>
-        </div>
-    </div>
-
-    <script>
-        // Data Store State Management
-        let windows = [
-            {
-                id: '1',
-                name: 'Living Room Main',
-                treatment: 'Curtains',
-                width: '2400',
-                height: '2100',
-                image: '',
-                notes: 'S-Fold track, ceiling mount. Sheer linen fabric.'
-            }
-        ];
-        let currentWindowId = '1';
-
-        // Initialize App Component DOM Bindings
-        document.addEventListener("DOMContentLoaded", () => {
-            // Bind explicit event listeners instead of using inline HTML attributes
-            document.getElementById('btnAddNewWindow').addEventListener('click', addNewWindow);
-            document.getElementById('btnCreateFirst').addEventListener('click', addNewWindow);
-            document.getElementById('btnDeleteWindow').addEventListener('click', deleteCurrentWindow);
-            document.getElementById('btnPdfExport').addEventListener('click', generatePDF);
-            document.getElementById('winImage').addEventListener('change', handleImageUpload);
-
-            // Bind Input Form Event Listeners
-            document.getElementById('winName').addEventListener('input', (e) => updateCurrentWindowField('name', e.target.value));
-            document.getElementById('winTreatment').addEventListener('change', (e) => updateCurrentWindowField('treatment', e.target.value));
-            document.getElementById('winWidth').addEventListener('input', (e) => updateCurrentWindowField('width', e.target.value));
-            document.getElementById('winHeight').addEventListener('input', (e) => updateCurrentWindowField('height', e.target.value));
-            document.getElementById('winNotes').addEventListener('input', (e) => updateCurrentWindowField('notes', e.target.value));
-
-            renderSidebar();
-            switchWindow(currentWindowId);
-        });
-
-        // UI Core Renderers
-        function renderSidebar() {
-            const listContainer = document.getElementById('windowList');
-            listContainer.innerHTML = '';
-
-            if (windows.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-4 italic">No items listed</p>`;
-                return;
-            }
-
-            windows.forEach(win => {
-                const button = document.createElement('button');
-                button.className = `w-full text-left p-3 rounded-lg text-sm transition-all flex items-center justify-between font-medium cursor-pointer ${
-                    win.id === currentWindowId 
-                        ? 'bg-blue-50 border border-blue-200 text-blue-700 shadow-xs' 
-                        : 'text-gray-600 hover:bg-gray-50 border border-transparent'
-                }`;
-                button.addEventListener('click', () => switchWindow(win.id));
-                
-                button.innerHTML = `
-                    <span class="truncate pr-2">${win.name || 'Unnamed Window'}</span>
-                    <span class="text-xs px-2 py-0.5 rounded-sm bg-gray-200/60 text-gray-600">${win.treatment}</span>
-                `;
-                listContainer.appendChild(button);
-            });
-        }
-
-        function switchWindow(id) {
-            currentWindowId = id;
-            renderSidebar();
-
-            const activeWin = windows.find(w => w.id === id);
-            const editorPanel = document.getElementById('editorPanel');
-            const noWindowMessage = document.getElementById('noWindowMessage');
-
-            if (!activeWin) {
-                editorPanel.style.display = 'none';
-                noWindowMessage.classList.remove('hidden');
-                return;
-            }
-
-            editorPanel.style.display = 'block';
-            noWindowMessage.classList.add('hidden');
-
-            // Populate Form Fields
-            document.getElementById('winName').value = activeWin.name || '';
-            document.getElementById('winTreatment').value = activeWin.treatment || 'Curtains';
-            document.getElementById('winWidth').value = activeWin.width || '';
-            document.getElementById('winHeight').value = activeWin.height || '';
-            document.getElementById('winNotes').value = activeWin.notes || '';
-
-            // Handle Image Previews
-            const preview = document.getElementById('imagePreview');
-            const uploadPrompt = document.getElementById('uploadPrompt');
-            const changeOverlay = document.getElementById('changeOverlay');
-
-            if (activeWin.image) {
-                preview.src = activeWin.image;
-                preview.classList.remove('hidden');
-                uploadPrompt.classList.add('hidden');
-                changeOverlay.classList.remove('hidden');
-            } else {
-                preview.src = '';
-                preview.classList.add('hidden');
-                uploadPrompt.classList.remove('hidden');
-                changeOverlay.classList.add('hidden');
-            }
-        }
-
-        // Data Mutations
-        function addNewWindow() {
-            const newId = Date.now().toString();
-            const newWin = {
-                id: newId,
-                name: `Window ${windows.length + 1}`,
-                treatment: 'Curtains',
-                width: '',
-                height: '',
-                image: '',
-                notes: ''
-            };
-            windows.push(newWin);
-            switchWindow(newId);
-        }
-
-        function deleteCurrentWindow() {
-            if (!currentWindowId) return;
-            const index = windows.findIndex(w => w.id === currentWindowId);
-            if (index > -1) {
-                windows.splice(index, 1);
-                const nextActive = windows[index] || windows[index - 1] || null;
-                switchWindow(nextActive ? nextActive.id : null);
-            }
-        }
-
-        function updateCurrentWindowField(field, value) {
-            const activeWin = windows.find(w => w.id === currentWindowId);
-            if (activeWin) {
-                activeWin[field] = value;
-                if (field === 'name' || field === 'treatment') {
-                    renderSidebar();
-                }
-            }
-        }
-
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                updateCurrentWindowField('image', e.target.result);
-                switchWindow(currentWindowId);
-            }
-            reader.readAsDataURL(file);
-        }
-
-        // PDF Generation Pipeline
-        function generatePDF() {
-            if (windows.length === 0) {
-                alert("Please add at least one window entry before generating a report.");
-                return;
-            }
-
-            document.getElementById('reportDate').innerText = new Date().toLocaleDateString('en-AU', { 
-                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' 
-            });
-
-            const pdfContainer = document.getElementById('pdfWindowsContainer');
-            pdfContainer.innerHTML = '';
-
-            windows.forEach((win, index) => {
-                const itemBlock = document.createElement('div');
-                itemBlock.style.border = "1px solid #d1d5db";
-                itemBlock.style.padding = "20px";
-                itemBlock.style.borderRadius = "8px";
-                itemBlock.style.display = "flex";
-                itemBlock.style.gap = "20px";
-                itemBlock.style.marginBottom = "25px";
-                itemBlock.style.background = "#ffffff";
-                itemBlock.style.pageBreakInside = "avoid";
-
-                const imageHtml = win.image 
-                    ? `<img src="${win.image}" style="width: 180px; height: 180px; object-fit: cover; border-radius: 6px; border: 1px solid #e5e7eb;" />`
-                    : `<div style="width: 180px; height: 180px; border: 1px dashed #d1d5db; border-radius: 6px; background: #f9fafb; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #9ca3af; font-style: italic;">No image uploaded</div>`;
-
-                itemBlock.innerHTML = `
-                    <div style="flex: 1; min-width: 0; font-family: sans-serif;">
-                        <h2 style="font-size: 18px; font-weight: bold; color: #111827; margin: 0 0 10px 0; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px;">${index + 1}. ${win.name || 'Unnamed Window'}</h2>
-                        <div style="font-size: 13px; margin-bottom: 4px;"><strong style="color: #4b5563;">Dressing Selection:</strong> <span style="color: #1e40af; font-weight: bold;">${win.treatment}</span></div>
-                        <div style="font-size: 13px; margin-bottom: 4px;"><strong style="color: #4b5563;">Finished Width:</strong> <span style="font-family: monospace;">${win.width ? win.width + ' mm' : '-'}</span></div>
-                        <div style="font-size: 13px; margin-bottom: 12px;"><strong style="color: #4b5563;">Finished Height:</strong> <span style="font-family: monospace;">${win.height ? win.height + ' mm' : '-'}</span></div>
-                        <div style="margin-top: 10px; background: #f9fafb; padding: 10px; border-radius: 4px; border: 1px solid #f3f4f6;">
-                            <span style="display: block; font-size: 11px; font-weight: bold; color: #6b7280; margin-bottom: 4px; text-transform: uppercase;">Notes / Configuration:</span>
-                            <p style="margin: 0; font-size: 12px; color: #374151; white-space: pre-wrap;">${win.notes || 'No notes added.'}</p>
-                        </div>
-                    </div>
-                    <div style="flex-shrink: 0;">
-                        ${imageHtml}
-                    </div>
-                `;
-                pdfContainer.appendChild(itemBlock);
-            });
-
-            const element = document.getElementById('pdfReportContent');
-
-            const options = {
-                margin:       [10, 10, 10, 10],
-                filename:     'Window-Treatment-BOM-Report.pdf',
-                image:        { type: 'jpeg', quality: 0.95 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            // Execute client-side save lifecycle safely
-            if (typeof html2pdf !== 'undefined') {
-                html2pdf().set(options).from(element).save();
-            } else {
-                alert("The PDF rendering library is still loading. Please try again in a moment.");
-            }
-        }
-    </script>
-</body>
-</html>
+                                <label class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-
