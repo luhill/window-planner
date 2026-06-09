@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Window Treatment Planner & BOM Generator</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@3.4.15"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="bg-gray-50 font-sans min-h-screen text-gray-800">
@@ -30,7 +30,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <aside class="lg:col-span-1 bg-white p-4 rounded-xl shadow-xs border border-gray-200 h-fit">
+            <aside class="lg:col-span-1 bg-white p-4 rounded-xl shadow-sm border border-gray-200 h-fit">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="font-semibold text-gray-700">Windows List</h2>
                     <button id="btnAddNewWindow" class="text-sm bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded-md transition-colors cursor-pointer">
@@ -40,7 +40,7 @@
                 <div id="windowList" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1"></div>
             </aside>
 
-            <main class="lg:col-span-3 bg-white p-6 rounded-xl shadow-xs border border-gray-200">
+            <main class="lg:col-span-3 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                 <div id="noWindowMessage" class="hidden text-center py-20">
                     <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     <p class="text-gray-500 font-medium">No windows created yet.</p>
@@ -60,4 +60,104 @@
                         <div class="space-y-4">
                             <label class="block text-sm font-medium text-gray-700">Window Reference Photo</label>
                             <div class="flex items-center justify-center w-full">
-                                <label class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-
+                                <label class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative group">
+                                    <div id="uploadPrompt" class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
+                                        <svg class="w-8 h-8 mb-4 text-gray-500" fill="none" viewBox="0 0 20 16" xmlns="http://www.w3.org/2000/svg"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2l2 2"/></svg>
+                                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload image</span></p>
+                                    </div>
+                                    <img id="imagePreview" class="hidden w-full h-full object-cover absolute inset-0" alt="Window Preview">
+                                    <div id="changeOverlay" class="hidden absolute inset-0 bg-black/40 group-hover:flex items-center justify-center text-white text-sm font-medium transition-opacity">Change Image</div>
+                                    <input type="file" id="winImage" accept="image/*" class="hidden" />
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label for="winTreatment" class="block text-sm font-medium text-gray-700 mb-1">Dressing Type</label>
+                                <select id="winTreatment" class="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white focus:border-blue-500 focus:outline-none">
+                                    <option value="Curtains">Curtains</option>
+                                    <option value="Roller Blinds">Roller Blinds</option>
+                                    <option value="Roman Blinds">Roman Blinds</option>
+                                    <option value="Venetian Blinds">Venetian Blinds</option>
+                                    <option value="Plantation Shutters">Plantation Shutters</option>
+                                    <option value="Other">Other (Specify in Notes)</option>
+                                </select>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="winWidth" class="block text-sm font-medium text-gray-700 mb-1">Width (mm)</label>
+                                    <input type="number" id="winWidth" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none" placeholder="Width">
+                                </div>
+                                <div>
+                                    <label for="winHeight" class="block text-sm font-medium text-gray-700 mb-1">Height (mm)</label>
+                                    <input type="number" id="winHeight" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none" placeholder="Height">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="winNotes" class="block text-sm font-medium text-gray-700 mb-1">Notes / Fabric / Mounting</label>
+                                <textarea id="winNotes" rows="4" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none text-sm" placeholder="Configuration notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div style="display: none;">
+        <div id="pdfReportContent" style="padding: 30px; background: white; color: black; font-family: sans-serif; width: 790px;">
+            <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 5px; color: #111827; border-b: 2px solid #111827; padding-bottom: 10px;">Window Treatment Schedule & BOM Report</h1>
+            <p style="font-size: 12px; color: #4b5563; margin-bottom: 25px;">Generated on: <span id="reportDate"></span></p>
+            <div id="pdfWindowsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Internal State Engine Tracker
+        let windows = [{ id: '1', name: 'Living Room Main', treatment: 'Curtains', width: '2400', height: '2100', image: '', notes: 'S-Fold track, ceiling mount.' }];
+        let currentWindowId = '1';
+
+        console.log("[APP INITIALIZATION] Initial state configuration loaded:", JSON.parse(JSON.stringify(windows)));
+
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("[DOM CONTENT LOADED] Protocol detected:", window.location.protocol);
+            
+            if (window.location.protocol === 'file:') {
+                console.warn("[SECURITY ALERT] App running over file:// protocol.");
+                document.getElementById('securityWarning').classList.remove('hidden');
+            }
+
+            // Binding Core Event Listeners
+            document.getElementById('btnAddNewWindow').addEventListener('click', () => { console.log("[EVENT CLICK] + Add button"); addNewWindow(); });
+            document.getElementById('btnCreateFirst').addEventListener('click', () => { console.log("[EVENT CLICK] Create First button"); addNewWindow(); });
+            document.getElementById('btnDeleteWindow').addEventListener('click', () => { console.log("[EVENT CLICK] Delete Window button"); deleteCurrentWindow(); });
+            document.getElementById('btnPdfExport').addEventListener('click', () => { console.log("[EVENT CLICK] Export PDF button initiated"); generatePDF(); });
+            document.getElementById('winImage').addEventListener('change', (e) => { console.log("[EVENT CHANGE] Image file selection detected"); handleImageUpload(e); });
+
+            // Form Fields Event Listeners
+            document.getElementById('winName').addEventListener('input', (e) => updateCurrentWindowField('name', e.target.value));
+            document.getElementById('winTreatment').addEventListener('change', (e) => updateCurrentWindowField('treatment', e.target.value));
+            document.getElementById('winWidth').addEventListener('input', (e) => updateCurrentWindowField('width', e.target.value));
+            document.getElementById('winHeight').addEventListener('input', (e) => updateCurrentWindowField('height', e.target.value));
+            document.getElementById('winNotes').addEventListener('input', (e) => updateCurrentWindowField('notes', e.target.value));
+
+            renderSidebar();
+            switchWindow(currentWindowId);
+        });
+
+        function renderSidebar() {
+            console.log("[RENDER SIDEBAR] Syncing layout items. Length:", windows.length);
+            const listContainer = document.getElementById('windowList');
+            listContainer.innerHTML = '';
+            
+            if (windows.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-gray-400 text-center py-4 italic">No items listed</p>`;
+                return;
+            }
+            
+            windows.forEach(win => {
+                const button = document.createElement('button');
+                button.className = `w-full text-left p-3 rounded-lg text-sm transition-all flex items-center justify-between font-medium cursor-pointer ${win.id === currentWindowId ? 'bg-blue-50 border border-blue-200 text-blue-70
